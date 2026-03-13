@@ -1,10 +1,25 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_API_URL
 
 export default function Home() {
+  const location = useLocation()
+
+  // Scroll to section after navigating from another page
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '')
+      // Small delay to let the page render first
+      setTimeout(() => {
+        const el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
+  }, [location])
+
+
   const [about, setAbout] = useState(null)
   const [skills, setSkills] = useState([])
   const [projects, setProjects] = useState([])
