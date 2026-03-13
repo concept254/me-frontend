@@ -1,13 +1,11 @@
-import { createContext, useState, useContext } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    // ← on load, check localStorage for saved user
     try {
-      const savedUser = localStorage.getItem('user')
-      return savedUser ? JSON.parse(savedUser) : null
+      return JSON.parse(localStorage.getItem('me_user'))
     } catch {
       return null
     }
@@ -15,14 +13,12 @@ export function AuthProvider({ children }) {
 
   const signIn = (userData) => {
     setUser(userData)
-    // ← save user to localStorage on signin
-    localStorage.setItem('user', JSON.stringify(userData))
+    localStorage.setItem('me_user', JSON.stringify(userData))
   }
 
   const signOut = () => {
     setUser(null)
-    // ← clear localStorage on signout
-    localStorage.removeItem('user')
+    localStorage.removeItem('me_user')
   }
 
   return (
