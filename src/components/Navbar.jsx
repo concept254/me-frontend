@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const navLinks = [
   { label: 'About', href: '/#about' },
@@ -13,6 +14,8 @@ const navLinks = [
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
 
   const handleNavClick = (href) => {
     setMenuOpen(false)
@@ -46,13 +49,33 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Hire me button */}
-        <a
-          href="/#contact"
-          className="hidden md:block text-sm px-4 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white transition font-medium"
-        >
-          Hire Me
-        </a>
+        {/* Auth + Hire Me */}
+        <div className="hidden md:flex items-center gap-3">
+          {user ? (
+            <>
+              <span className="text-sm text-gray-400">Hi, {user.name.split(' ')[0]}</span>
+              <button
+                onClick={() => { signOut(); navigate('/') }}
+                className="text-sm px-4 py-2 rounded-full border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white transition"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="text-sm px-4 py-2 rounded-full border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white transition"
+            >
+              Sign In
+            </Link>
+          )}
+          <a
+            href="/#contact"
+            className="text-sm px-4 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white transition font-medium"
+          >
+            Hire Me
+          </a>
+        </div>
 
         {/* Mobile hamburger */}
         <button
